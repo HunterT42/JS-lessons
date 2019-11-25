@@ -294,11 +294,11 @@ var my_name;
 
 ```javascript
 var myNumber = 20;
-console.log(milkInGrams);
+console.log(myNumber);
 // Выведет 20
 
 myNumber = 100;
-console.log(milkInGrams);
+console.log(myNumber);
 // Выведет 100
 ```
 **Операции**
