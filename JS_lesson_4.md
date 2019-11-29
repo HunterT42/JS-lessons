@@ -1,5 +1,0 @@
-# JavaScript для новичков.
-***
-```javascript
-
-```
