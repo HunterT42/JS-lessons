@@ -140,3 +140,23 @@ for (var page = 1; page <= totalPages; page += 2) {
 ```
 ***
 ## Пример пять:
+Теперь давайте рассмотрим драйвер, который в зависимости от выбранного режима работы будет печатать страницы.
+
+```javascript
+var mode = 'document'; // Режим работы драйвера печати
+var pageNumber = 5; // Номер копируемой страницы
+var copyCount = 7; // Количество копий
+var totalPages = 6; // Всего страниц в документе
+
+if (mode === 'pageCopy') { //Режим копирования одной страницы
+  for (var copies = 1; copies <= copyCount; copies++) {
+    keks.print(pageNumber);
+  }
+}
+
+if (mode === 'document'){ //Режим печати всех страниц
+   for (var page = 1; page <= totalPages; page++) {
+     keks.print(page);
+   }
+}
+```
