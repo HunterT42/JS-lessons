@@ -162,7 +162,6 @@ var goToDairy = false;
 var goToStore = false;
 var goToMarket = false;
 
-
 if(time>=8 && time<19 && time!=13 && time!=14 && goToStore == false && goToMarket == false){
   goToDairy=true;
 }
