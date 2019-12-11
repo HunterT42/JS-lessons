@@ -1,4 +1,4 @@
-# JavaScript для новичков.
+#МАССИВЫ(ПРАКТИКА).
 ***
 ## Пример один:
 Москва не сразу строилась, поэтому начнем с малого, с алгоритмов шифрования. Вот техническое задание:
@@ -359,6 +359,208 @@ if(usersByDay.length % 2 !== 0){
 
   var median = usersByDay[medianIndex];
   console.log(median);
-
   }
 ```
+
+***
+## Пример девять:
+
+Примерно та же ситуация происходит с подсчётом медианы, когда в массиве хранится чётное количество элементов. Если количество элементов чётное, то медиана считается как среднее значение от двух элементов: левого и правого от середины.
+```javascript
+// Медиана: 3
+[0, 1, 2, 4, 50, 100]
+Снова выводим формулы индексов двух элементов: левого и правого от середины.
+
+// Длина 4, индекс левого 1, правого 2
+[1, 2, 3, 4]
+
+// Длина 6, индекс левого 2, правого 3
+[1, 2, 3, 4, 5, 6]
+
+// Длина 8, индекс левого 3, правого 4
+[1, 2, 3, 4, 5, 6, 7, 8]
+```
+Делим длину массива на два и вычитаем единицу — левый индекс найден. Делим длину массива на два — правый индекс найден.
+
+Расчёт медианы для чётного количества элементов в массиве добавляем в альтернативной ветке условия.
+
+**Обратите внимание, что этот алгоритм поиска медианы не будет работать на пустых массивах и результатом будет NaN. Всё потому, что в расчёты закрадывается значение undefined, а оно в любых математических операциях даёт NaN.**
+
+```javascript
+var usersByDay = [1, 2, 3, 4, 5, 6];
+console.log(usersByDay);
+
+if (usersByDay.length % 2 !== 0) {
+  var medianIndex = (usersByDay.length - 1) / 2;
+  console.log(medianIndex);
+  var median = usersByDay[medianIndex];
+  console.log(median);
+}
+else{
+var leftIndex = (usersByDay.length) / 2 - 1;
+var rightIndex = usersByDay.length / 2;
+
+console.log(leftIndex);
+console.log(rightIndex);
+
+var median = (usersByDay[leftIndex] + usersByDay[rightIndex]) / 2;
+console.log(median);
+}
+```
+
+***
+## Пример девять:
+
+Сейчас нужно дополнить нашу программу двумя блоками, написанными ранее.
+
+Во-первых, добавим код для сортировки массива. Во-вторых, добавим код для вычисления медианы.
+
+И останется только вывести значение медианного значения в консоль, чтобы видеть, как оно отличается от среднего значения.
+
+```javascript
+var expectedUsers = 1000;
+
+var usersByDay = [817, 581, 1370, 752, 1247, 681, 1120, 915, 875, 1341, 757, 610, 812, 741, 11139, 81112, 638, 877, 1242, 1159, 1372, 1170, 845, 1289, 515, 1247, 769, 1261, 2805, 1201];
+
+
+// Суммируем посещаемость
+var totalUsers = 0;
+for (var i = 0; i <= usersByDay.length - 1; i++) {
+  totalUsers += usersByDay[i];
+}
+
+// Рассчитываем среднее значение посещаемости
+var averageUsers = totalUsers / usersByDay.length;
+console.log('Средняя посещаемость: ' + averageUsers);
+
+if (averageUsers > expectedUsers) {
+  console.log('Посещаемость великолепна. Продолжай в том же духе!');
+} else {
+  console.log('Посещаемость так себе. Нужно поднапрячься!');
+}
+
+// Сортируем массив, чтобы медиана была точной(большие числа отправляются в конец массива)
+
+for (var i = 0; i <= usersByDay.length - 2; i++) {
+  var minValue = usersByDay[i];
+
+  for (var j = i + 1; j <= usersByDay.length - 1; j++) {
+    if (usersByDay[j] < minValue) {
+      minValue = usersByDay[j];
+      var swap = usersByDay[i];
+      usersByDay[i] = minValue;
+      usersByDay[j] = swap;
+    }
+  }
+}
+
+
+// Рассчитываем медиану
+
+if (usersByDay.length % 2 !== 0) {
+  var medianIndex = (usersByDay.length - 1) / 2;
+  var median = usersByDay[medianIndex];
+} else {
+  var leftIndex = usersByDay.length / 2 - 1;
+  var rightIndex = usersByDay.length / 2;
+  var median = (usersByDay[leftIndex] + usersByDay[rightIndex]) / 2;
+}
+
+console.log('Медианная посещаемость: ' + median);
+```
+***
+## Пример десять:
+Отлично, уже сейчас видно, что что-то не так. Ведь средняя посещаемость составляет 1032, а медианная 896 человек в день. А это уже ниже ожидаемого значения в тысячу человек.
+
+Есть одна проблема, надо доказать, что среднее и медиана отличаются сильно, не менее, чем на 10 процентов.
+
+В нашем случае очень подозрительно, когда медиана ниже среднего значения. Осталось понять, как посчитать проценты.
+
+Для этого нужно поделить значение медианы на среднее значение. Например, если медиана составляет 80, а среднее значение 100, то:
+
+// Медиана составляет 80% от среднего
+80 / 100 = 0.8
+Переформулируем задачу: если медиана составляет меньше, чем 0.9 от среднего, то есть подозрения в подтасовках.
+
+Осталось дописать проверку и вывести рекомендации в консоль.
+
+**Теперь наша программа готова!**
+```javascript
+var expectedUsers = 1000;
+
+var usersByDay = [817, 581, 1370, 752, 1247, 681, 1120, 915, 875, 1341, 757, 610, 812, 741, 1139, 812, 638, 877, 1242, 1159, 1372, 1170, 845, 1289, 515, 1247, 769, 1261, 2805, 1201];
+
+// Рисуем график посещаемости
+keks.plot(usersByDay, expectedUsers);
+
+// Суммируем посещаемость
+var totalUsers = 0;
+for (var i = 0; i <= usersByDay.length - 1; i++) {
+  totalUsers += usersByDay[i];
+}
+
+// Рассчитываем среднее значение посещаемости
+var averageUsers = totalUsers / usersByDay.length;
+console.log('Средняя посещаемость: ' + averageUsers);
+
+if (averageUsers > expectedUsers) {
+  console.log('Посещаемость великолепна. Продолжай в том же духе!');
+} else {
+  console.log('Посещаемость так себе. Нужно поднапрячься!');
+}
+
+// Сортируем массив
+for (var i = 0; i <= usersByDay.length - 2; i++) {
+  var minValue = usersByDay[i];
+
+  for (var j = i + 1; j <= usersByDay.length - 1; j++) {
+    if (usersByDay[j] < minValue) {
+      minValue = usersByDay[j];
+      var swap = usersByDay[i];
+      usersByDay[i] = minValue;
+      usersByDay[j] = swap;
+    }
+  }
+}
+
+// Рассчитываем медиану
+if (usersByDay.length % 2 !== 0) {
+  var medianIndex = (usersByDay.length - 1) / 2;
+  var median = usersByDay[medianIndex];
+} else {
+  var leftIndex = usersByDay.length / 2 - 1;
+  var rightIndex = usersByDay.length / 2;
+  var median = (usersByDay[leftIndex] + usersByDay[rightIndex]) / 2;
+}
+
+console.log('Медианная посещаемость: ' + median);
+
+if (median / averageUsers < 0.9) {
+  console.log('Есть подозрения в подтасовках!');
+} else {
+  console.log('Подозрений в подтасовках нет!');
+}
+```
+***
+## Подытожим(сортировка массива):
+```javascript
+
+var numbers = [12, 3, 7, 9, 10, 5];
+
+for (var i = 0; i <= numbers.length - 2; i++) {
+  var minValue = numbers[i];
+
+  for (var j = i + 1; j <= numbers.length - 1; j++) {
+    if (numbers[j] < minValue) {
+      minValue = numbers[j];
+      var swap = numbers[i];
+      numbers[i] = minValue;
+      numbers[j] = swap;
+    }
+  }
+}
+
+console.log(numbers);
+// Выведет: [3, 5, 7, 9, 10, 12];
+```
+Массив с числами numbers сортируется по возрастанию элементов. На каждой итерации мы сравниваем minValue с остальными элементами массива. Если какой-то из них окажется меньше, чем minValue, он запишется в minValue, перезаписав старое значение, и переместится в начало массива. Переменная swap — вспомогательная переменная, с помощью, которой мы можем поменять элементы местами.
