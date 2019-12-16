@@ -330,7 +330,7 @@ console.log('За перелёт на Камчатку получим ' + calcul
 ```
 
 ***
-## Краткий конспект по функциям:
+## Конспект по функциям(1):
 Пример функции.
 ```javascript
 var calculateSum = function (numberFirst, numberSecond) {
@@ -575,7 +575,7 @@ calculateFlights(3118, true);
 ## Пример пятнадцать:
 еперь, когда мы знаем количество миль за один полёт, ничего не мешает нам узнать, сколько раз придётся слетать по одному маршруту, чтобы заполучить поездку в Токио.
 
-Добавим для функции **calculateFlights** ещё один параметр, который мы пока не использовали. Он будет содержать количество необходимых миль. Сейчас это мили до Токио, но вдруг Кекс захочет накопить на полёт ещё куда-нибудь? Достаточно будет поменять значение аргумента и вызвать функцию.
+Добавим для функции **calculateFlights** ещё один параметр, который мы пока не использовали. Он будет содержать количество необходимых миль. Сейчас это мили до Токио, но вдруг заказчик захочет накопить на полёт ещё куда-нибудь? Достаточно будет поменять значение аргумента и вызвать функцию.
 
 Раз мы делаем универсальную программу, то имя нового параметра тоже должно быть универсальным. Поэтому название вроде **milesToTokyo** нам не подойдёт, оно слишком конкретное и не переиспользуемое. Выберем **milesTarget**. Такое имя подходит лучше, потому что с таким параметром мы сможем посчитать количество полётов хоть до Сиэтла.
 
@@ -604,19 +604,198 @@ calculateFlights(3118, true, 15000);
 ```
 ***
 ## Пример шестнадцать:
+Теперь у нас есть функция, которая считает, за сколько полётов по одному и тому же маршруту можно накопить необходимое количество миль.
 
+Чтобы узнать, как нашему заказчику скорее оказаться в Токио, надо сравнить количество полётов по каждому из направлений. Для этого нам нужно вызвать функцию **calculateFlights** дважды, для полётов в Валенсию и Лиссабон, с одинаковым значением третьего аргумента (**15000 миль до Токио**).
+
+Теперь, чтобы понять, что выгодней, давайте выясним, сколько раз нужно смотаться по работе в Лиссабон, чтобы наконец оказаться на отдыхе в желанном Токио? Расстояние до столицы Португалии **3617км**.
 ```javascript
+var calculateMiles = function (distance, isBusinessClass) {
+  var percent = 0.18;
+  if (isBusinessClass) {
+    percent += 0.04;
+  }
+  if (distance > 3500) {
+    percent += 0.15;
+  }
+  return distance * percent;
+};
+
+var calculateFlights = function (distance, isBusinessClass, milesTarget) {
+  var miles = calculateMiles(distance, isBusinessClass);
+  var flights = Math.ceil(milesTarget / miles);
+  return flights;
+};
+
+console.log('Необходимое количество полётов в бизнес-классе до Валенсии: ' +  calculateFlights(3118, true, 15000));
+console.log('Необходимое количество полётов в экономе до Лиссабона: ' +  calculateFlights(3617, false, 15000));
 
 ```
 ***
 ## Пример семнадцать:
+Отрефакторим наш код, а уже затем закончим писать программу.
 
+Зачем снова рефакторинг?
+
+Дело в том, что дальше нужно будет сравнить полученные результаты и вывести рекомендации. Получается, нам придётся несколько раз использовать результаты работы функции **calculateFlights**. Поэтому логично и правильно записать эти результаты в переменные и использовать их дальше. Если мы вдруг захотим получить данные для других городов, мы просто изменим значения аргументов в одном единственном месте, а не по всему коду.
+
+Как лучше всего назвать переменные, которые содержат в себе количество полётов до Лиссабона и Валенсии? Первое, что приходит на ум, дать переменным конкретные названия: **flightsToValencia** и **flightsToLisbon** — но такие название слишком частные. Если заказчик захочет полететь в какой-нибудь канадский Виннипег вместо Валенсии, переменную придёя переименовывать. И так каждый раз, когда направление полёта поменяется.
+
+Можно отталкиваться не от направления, а от класса перелёта, и назвать переменные **flightsEconom** и **flightsBusiness**. Такой вариант тоже не самый лучший, потому что мы летаем в разные города, меняется не только класс, но и расстояния.
+
+Назовём переменные максимально просто: **flightsVariantFirst** и **flightsVariantSecond**. Тогда внутри у них могут быть любые расстояния и классы перелёта.
 ```javascript
+var calculateMiles = function (distance, isBusinessClass) {
+  var percent = 0.18;
+  if (isBusinessClass) {
+    percent += 0.04;
+  }
+  if (distance > 3500) {
+    percent += 0.15;
+  }
+  return distance * percent;
+};
+
+var calculateFlights = function (distance, isBusinessClass, milesTarget) {
+  var miles = calculateMiles(distance, isBusinessClass);
+  var flights = Math.ceil(milesTarget / miles);
+  return flights;
+};
+
+var flightsVariantFirst = calculateFlights(3118, true, 15000);
+
+console.log('Необходимое количество полётов в бизнес-классе до Валенсии: ' + flightsVariantFirst);
+
+var flightsVariantSecond = calculateFlights(3617, false, 15000);
+
+console.log('Необходимое количество полётов в экономе до Лиссабона: ' + flightsVariantSecond);
 
 ```
 ***
 ## Пример восемнадцать:
+Осталось совсем немного!
 
+Сейчас мы знаем результаты и для Валенсии, и для Лиссабона. Осталось добавить код, который сравнит их и скажет, как нашему заказчику быстрее оказаться в заветном Токио. Используем условия **if...else**. Чем меньше полётов надо потратить на накопление миль, тем лучше.
 ```javascript
+var calculateMiles = function (distance, isBusinessClass) {
+  var percent = 0.18;
+  if (isBusinessClass) {
+    percent += 0.04;
+  }
+  if (distance > 3500) {
+    percent += 0.15;
+  }
+  return distance * percent;
+};
 
+var calculateFlights = function (distance, isBusinessClass, milesTarget) {
+  var miles = calculateMiles(distance, isBusinessClass);
+  var flights = Math.ceil(milesTarget / miles);
+  return flights;
+};
+
+var flightsVariantFirst = calculateFlights(3118, true, 15000);
+var flightsVariantSecond = calculateFlights(3617, false, 15000);
+
+console.log('Необходимое количество полётов в бизнес-классе до Валенсии: ' + flightsVariantFirst);
+console.log('Необходимое количество полётов в экономе до Лиссабона: ' + flightsVariantSecond);
+if(flightsVariantFirst > flightsVariantSecond){
+  console.log('Быстрей накопишь полётами в экономе до Лиссабона! Количество полётов: ' +  flightsVariantSecond);
+}
+  else  {
+    console.log('Быстрей накопишь полётами в бизнесе до Валенсии! Количество полётов: ' +  flightsVariantFirst);
+  }
+```
+***
+## Пример девятнадцать:
+Мы узнали, что мили до Токио проще накопить полётами до Лиссабона в экономе. А что с остальными городами? Заказчик предупреждал, что Токио — только часть его плана. Кроме Токио он хочет бесплатно слетать в Саскатун (3000 миль) и Асунсьон (7500 миль).
+
+Конечно, мы не будем вызывать функцию **calculateFlights** самостоятельно для каждого расстояния. Мы запишем все мили в массив (не забудем добавить туда Токио) и будем его перебирать, вызывая на каждой итерации функцию **calculateFlights** для полётов в Валенсию и Лиссабон. В функцию будем передавать текущий элемент массива — необходимое количество миль для полёта в какой-то город из списка.
+
+Чем удобно использование массива и цикла? Мы можем масштабировать решение на любое количество городов. Будь их хоть 2, хоть 10 или даже 100. Цикл будет перебирать массив, вызывать функцию для подсчёта полётов, а затем сравнивать результаты. И так для каждого элемента массива.
+
+Давайте добавим массив с циклом и, наконец, скажем, как заказчику копить на путешествия его мечты
+```javascript
+var calculateMiles = function (distance, isBusinessClass) {
+  var percent = 0.18;
+  if (isBusinessClass) {
+    percent += 0.04;
+  }
+  if (distance > 3500) {
+    percent += 0.15;
+  }
+  return distance * percent;
+};
+
+var calculateFlights = function (distance, isBusinessClass, milesTarget) {
+  var miles = calculateMiles(distance, isBusinessClass);
+  var flights = Math.ceil(milesTarget / miles);
+  return flights;
+};
+
+var targets = [3000, 7500, 15000];
+
+for(var i = 0; i <= targets.length -1; i++){
+  var flightsVariantFirst = calculateFlights(3118, true, targets[i]);
+  var flightsVariantSecond = calculateFlights(3617, false, targets[i]);
+
+console.log('Необходимое количество полётов в бизнес-классе до Валенсии: ' + flightsVariantFirst);
+console.log('Необходимое количество полётов в экономе до Лиссабона: ' + flightsVariantSecond);
+
+if (flightsVariantFirst > flightsVariantSecond) {
+  console.log('Быстрей накопишь полётами в экономе до Лиссабона! Количество полётов: ' + flightsVariantSecond);
+} else {
+  console.log('Быстрей накопишь полётами в бизнесе до Валенсии! Количество полётов: ' + flightsVariantFirst);
+}
+
+  }
+
+```
+***
+## Конспект по функциям(2):
+```javascript
+// Функция подсчёта миль
+
+var calculateMiles = function (distance, isBusinessClass) {
+  var percent = 0.18;
+  if (isBusinessClass) {
+    percent += 0.04;
+  }
+  if (distance > 3500) {
+    percent += 0.15;
+  }
+  return distance * percent;
+};
+
+
+// Функция, которая считает количество полётов
+
+var calculateFlights = function (distance, isBusinessClass, milesTarget) {
+  // Вызываем одну функцию из другой
+  var miles = calculateMiles(distance, isBusinessClass);
+  var flights = Math.ceil(milesTarget / miles);
+  return flights;
+};
+
+
+// Массив миль, которые нужно накопить
+
+var targets = [1500, 3000, 5000, 7500, 10000, 15000];
+
+
+// Цикл, в котором выясняется, какими перелётами мили накопятся быстрей
+
+for (var i = 0; i < targets.length; i++) {
+  var flightsVariantFirst = calculateFlights(3118, true, targets[i]);
+  var flightsVariantSecond = calculateFlights(3617, false, targets[i]);
+
+  console.log('Необходимое количество полётов в бизнес-классе до Валенсии: ' + flightsVariantFirst);
+  console.log('Необходимое количество полётов в экономе до Лиссабона: ' + flightsVariantSecond);
+
+  if (flightsVariantFirst > flightsVariantSecond) {
+    console.log('Быстрей накопишь полётами в экономе до Лиссабона! Количество полётов: ' + flightsVariantSecond);
+  } else {
+    console.log('Быстрей накопишь полётами в бизнесе до Валенсии! Количество полётов: ' + flightsVariantFirst);
+  }
+}
 ```
