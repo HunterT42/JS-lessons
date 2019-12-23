@@ -60,6 +60,8 @@ if (isMilk) {
 
 С цепочкой условий код похода в магазин будет выглядеть так:
 ```javascript
+// Массив чисел
+var array = [10, 20, 30, 40, 50];
 
 var isMilk = false;
 var isKefir = false;
