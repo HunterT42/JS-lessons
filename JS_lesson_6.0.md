@@ -30,22 +30,179 @@ var capybara = {
 - Значениями могут быть данные любого типа (число, строка, массив и так далее).
 ***
 ## Пример два:
-
+Теперь давайте рассмотрим вложенные условия на простом бытовом примере. Вы пошли в магазин за молоком. Если молока в магазине не окажется, но будет кефир, вы купите его. Если и кефира не будет, придётся взять йогурт. А вот если и йогурт закончился, вам придётся купить ряженку, хоть вы её не очень-то жалуете. Код с вложенными условиями будет выглядеть так:
 ```javascript
 
+var isMilk = false;
+var isKefir = false;
+var isYogurt = true;
+
+if (isMilk) {
+  console.log('Отлично! Беру молоко!');
+} else {
+  if (isKefir) {
+    console.log('Тогда возьму кефир!');
+  } else {
+    if (isYogurt) {
+      console.log('Ну и ладно! Куплю йогурт!');
+    } else {
+      console.log('Ну вот, придётся брать ряженку!');
+    }
+  }
+};
+
+// В консоль выведется: Ну и ладно! Куплю йогурт!
 ```
+
+Согласитесь, код выглядит громоздко? Есть более удобный способ записи — цепочка условных конструкций. Она подходит, когда необходимо проверить больше двух условий и закончить проверку, если какое-то из условий срабатывает.
+
+Синтаксис вам знаком, только во второй и последующих ветках if можно писать через пробел сразу после else, а затем добавить новое условие. Тогда, если первая проверка не выполняется, программа проверит условие в следующей ветке. Если и там условие неверно, код будет проверяться дальше. В конце конструкции можно добавить ветку с обычным else на случай, если ни одно из предыдущих условий не будет выполнено.
+
+С цепочкой условий код похода в магазин будет выглядеть так:
+```javascript
+
+var isMilk = false;
+var isKefir = false;
+var isYogurt = true;
+
+if (isMilk) {
+  console.log('Отлично! Беру молоко!');
+} else if (isKefir) {
+  console.log('Тогда возьму кефир!');
+} else if (isYogurt) {
+  console.log('Ну и ладно! Куплю йогурт!');
+} else {
+  console.log('Ну вот, придётся брать ряженку!');
+}
+
+// В консоль выведется: Ну и ладно! Куплю йогурт!
+```
+
+Так код выглядит аккуратней, логичней и легко читается.
+
 ***
 ## Пример три:
 
+# !!!ПОЧИНИТЬ!!!
+Теперь давайте потренируемся делать простенькую игру на основе пройденного нами материала.
 ```javascript
+var gameRules = {
+  diceNumber: 1,
+  maxAttempts: 1
+};
+
+var firstCat = {
+  name: 'Джон',
+  points: 0
+};
+
+var secondCat = {
+  name: 'Рудольф',
+  points: 0
+};
+
+var thirdCat = {
+  name: 'Рокки',
+  points: 0
+};
+
+var cats = [firstCat, secondCat, thirdCat];
+
+var runGame = function (rules, players) {
+  for (var currentAttempt = 1; currentAttempt <= rules.maxAttempts; currentAttempt++) {
+    for (var i = 0; i < players.length; i++) {
+      var throwResult = keks.throwDice(rules.diceNumber, rules.diceNumber * 6);
+      players[i].points += throwResult;
+      console.log(players[i].name + ' выбросил ' + players[i].points);
+    }
+  }
+  return players;
+};
+
+var getWinners = function (players) {
+  var winners = [];
+  var max = players[0];
+
+  for (var i = 0; i < players.length; i++) {
+    var currentPlayer = players[i];
+    if (currentPlayer.points > max.points) {
+      max = currentPlayer;
+      winners = [max];
+    } else if (currentPlayer.points === max.points) {
+      winners.push(currentPlayer);
+    }
+  }
+
+  return winners;
+};
+
+
+var printWinners = function (players, winners) {
+  if (players.length === winners.length) {
+    console.log('Все коты как на подбор!');
+    return;
+  }
+
+  var message = 'Победил ';
+  if (winners.length > 1) {
+    message = 'Победили ';    
+  }
+
+  for (var i = 0; i < winners.length; i++) {
+    if (i >= 1) {
+      message += ', ';      
+    }
+    message += winners[i].name;
+  }
+
+  message += ' с количеством очков: ' + winners[0].points;
+
+  console.log(message);
+};
+
+cats = runGame(gameRules, cats);
+var tops = getWinners(cats);
+printWinners(cats, tops);
 
 ```
+
 ***
-## Пример четыре:
+## Конспект(часть 1):
 
+Объект — тип данных, который хранит в себе информацию в виде пар «ключ-значение». Каждый элемент сопоставлен со своим ключом и порядок элементов совсем неважен.
 ```javascript
+var cat = {
+  name: 'Джон',
+  age: 5
+};
 
+console.log(cat.name); // Выведет в консоль: Джон
+console.log(cat.age); // Выведет в консоль: 5
+console.log(cat.color); // Выведет: undefined. Такого ключа в объекте нет
+
+cat.age++; // Увеличили возраст кота на 1
+console.log(cat.age) // Выведет в консоль 6
+
+cat.name = 'Рокки'; // Заменили снаружи значение свойства name
+console.log(cat.name); // Выведет в консоль: Рокки
 ```
+### Передача по ссылке
+Объект всегда один, в памяти не создаётся новое место под копию объекта. Каждая переменная содержит не новую отдельную сущность, а ссылку на один-единственный объект. Поэтому когда мы меняем что-то в объекте через одну из переменных, в которой содержится ссылка на него, изменения видны во всех других переменных, будь их хоть двадцать или сорок. Это важная особенность объектов, которую надо запомнить. Она так и называется — передача объектов по ссылке.
+```javascript
+var firstCat = {
+  name: 'Джон',
+  age: 5
+};
+
+var secondCat = firstCat;
+console.log(secondCat);
+// Выведет: {name:"Джон", age:5}
+
+firstCat.name = 'Снежок';
+console.log(secondCat);
+// Выведет: {name:"Снежок", age:5}
+```
+
 ***
 ## Пример пять:
 
